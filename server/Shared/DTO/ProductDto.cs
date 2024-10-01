@@ -1,4 +1,5 @@
-﻿using Entities.Models;
+﻿using Entities.Enums;
+using Entities.Models;
 
 namespace Shared.DTO;
 

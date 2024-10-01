@@ -7,7 +7,7 @@ using Kingsman.Presentation.ActionFilters;
 using Shared.DTO;
 using Kingsman.Server.Presentation.ModelBinders;
 
-namespace CompanyEmployees.Presentation.Controllers;
+namespace ColorEmployees.Presentation.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -23,6 +23,7 @@ public class ColorsController : ControllerBase
 	/// </summary>
 	/// <returns>The companies list</returns>
 	[HttpGet(Name = "GetColors")]
+    [Authorize]
 	public async Task<IActionResult> GetColors()
 	{
 		var companies = await _service.ColorService.GetAllColorsAsync(trackChanges: false);
@@ -31,17 +32,17 @@ public class ColorsController : ControllerBase
 	}
 
 	[HttpGet("{id:int}", Name = "ColorById")]
-	//[ResponseCache(Duration = 60)]
 	[HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 60)]
 	[HttpCacheValidation(MustRevalidate = false)]
-	public async Task<IActionResult> GetCompany(int id)
+	public async Task<IActionResult> GetColor(int id)
 	{
-		var company = await _service.ColorService.GetColorAsync(id, trackChanges: false);
-		return Ok(company);
+		var color = await _service.ColorService.GetColorAsync(id, trackChanges: false);
+
+		return Ok(color);
 	}
 
 	[HttpGet("collection/({ids})", Name = "ColorCollection")]
-	public async Task<IActionResult> GetCompanyCollection
+	public async Task<IActionResult> GetColorCollection
 		([ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<int> ids)
 	{
 		var companies = await _service.ColorService.GetByIdsAsync(ids, trackChanges: false);
@@ -52,7 +53,7 @@ public class ColorsController : ControllerBase
 	/// <summary>
 	/// Creates a newly created color
 	/// </summary>
-	/// <param name="company"></param>
+	/// <param name="color"></param>
 	/// <returns>A newly created color</returns>
 	/// <response code="201">Returns the newly created item</response>
 	/// <response code="400">If the item is null</response>
@@ -62,24 +63,24 @@ public class ColorsController : ControllerBase
 	[ProducesResponseType(400)]
 	[ProducesResponseType(422)]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
-    public async Task<IActionResult> CreateCompany([FromBody] ColorForManipulationDto manipulationDto)
+    public async Task<IActionResult> CreateColor([FromBody] ColorForManipulationDto manipulationDto)
 	{
-		var createdCompany = await _service.ColorService.CreateColorAsync(manipulationDto);
+		var createdColor = await _service.ColorService.CreateColorAsync(manipulationDto);
 
-		return CreatedAtRoute("", new { id = createdCompany.Id }, createdCompany);
+		return CreatedAtRoute("ColorById", new { id = createdColor.Id }, createdColor);
 	}
 
 	[HttpPost("collection")]
-	public async Task<IActionResult> CreateCompanyCollection
-		([FromBody] IEnumerable<ColorForManipulationDto> companyCollection)
+	public async Task<IActionResult> CreateColorCollection
+		([FromBody] IEnumerable<ColorForManipulationDto> colorCollection)
 	{
-		var result = await _service.ColorService.CreateColorCollectionAsync(companyCollection);
+		var (colors, ids) = await _service.ColorService.CreateColorCollectionAsync(colorCollection);
 
-		return CreatedAtRoute("ColorCollection", new { result.ids }, result.colors);
+		return CreatedAtRoute("ColorCollection", new { ids }, colors);
 	}
 
 	[HttpDelete("{id:int}")]
-	public async Task<IActionResult> DeleteCompany(int id)
+	public async Task<IActionResult> DeleteColor(int id)
 	{
 		await _service.ColorService.DeleteColorAsync(id, trackChanges: false);
 
@@ -88,18 +89,18 @@ public class ColorsController : ControllerBase
 
 	[HttpPut("{id:int}")]
 	[ServiceFilter(typeof(ValidationFilterAttribute))]
-	public async Task<IActionResult> UpdateCompany(int id, [FromBody] ColorForManipulationDto color)
+	public async Task<IActionResult> UpdateColor(int id, [FromBody] ColorForManipulationDto color)
 	{
 		await _service.ColorService.UpdateColorAsync(id, color, trackChanges: true);
 
 		return NoContent();
 	}
 
-	[HttpOptions]
-	public IActionResult GetCompaniesOptions()
-	{
-		Response.Headers.Add("Allow", "GET, OPTIONS, POST, PUT, DELETE");
+    [HttpOptions]
+    public IActionResult GetOptions()
+    {
+        Response.Headers.Add("Allow", "GET, OPTIONS, POST, PUT, DELETE");
 
-		return Ok();
-	}
+        return Ok();
+    }
 }

@@ -63,7 +63,7 @@ public static class ServiceExtensions
 				{
 					Endpoint = "*",
 					Limit = 30,
-					Period = "5m"
+					Period = "3m"
 				}
 			};
 
@@ -95,9 +95,9 @@ public static class ServiceExtensions
 		var jwtConfiguration = new JwtConfiguration();
 		configuration.Bind(jwtConfiguration.Section, jwtConfiguration);
 
-		var secretKey = Environment.GetEnvironmentVariable("SECRET");
+		var secretKey = configuration["SECRET"];
 
-		services.AddAuthentication(opt =>
+        services.AddAuthentication(opt =>
 		{
 			opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 			opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -125,7 +125,8 @@ public static class ServiceExtensions
 	{
 		services.AddSwaggerGen(s =>
 		{
-			s.SwaggerDoc("v1", new OpenApiInfo
+            s.OperationFilter<CustomPathParameterOperationFilter>();
+            s.SwaggerDoc("v1", new OpenApiInfo
 			{
 				Title = "Code Maze API",
 				Version = "v1",

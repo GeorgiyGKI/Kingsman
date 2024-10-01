@@ -19,9 +19,7 @@ public static class ExceptionMiddlewareExtensions
 				{
 					context.Response.StatusCode = contextFeature.Error switch
 					{
-                        //custom exceptions
-                        //NotFoundException => StatusCodes.Status404NotFound,
-                        //BadRequestException => StatusCodes.Status400BadRequest,
+                        ArgumentNullException => StatusCodes.Status404NotFound,
                         _ => StatusCodes.Status500InternalServerError
 					};
 

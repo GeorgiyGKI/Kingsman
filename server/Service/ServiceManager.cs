@@ -3,6 +3,7 @@ using Contracts;
 using Entities.ConfigurationModels;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Service.Contracts;
 
@@ -17,10 +18,14 @@ public sealed class ServiceManager : IServiceManager
     private readonly Lazy<IOrderService> _orderService;
     private readonly Lazy<IOrderItemService> _orderItemService;
     private readonly Lazy<IProductService> _productService;
+    private readonly Lazy<IAuthenticationService> _authenticationService;
 
     public ServiceManager(
         IRepositoryManager repositoryManager,
-        IMapper mapper
+        IMapper mapper,
+        UserManager<Customer> userManager,
+        IOptions<JwtConfiguration> configuration,
+        IConfiguration envCongiguration
         )
     {
         _brandService = new Lazy<IBrandService>(() =>
@@ -43,6 +48,9 @@ public sealed class ServiceManager : IServiceManager
 
         _productService = new Lazy<IProductService>(() =>
           new ProductService(repositoryManager, mapper));
+
+        _authenticationService = new Lazy<IAuthenticationService>(() =>
+            new AuthenticationService(mapper, userManager, configuration, envCongiguration));
     }
 
     public IBrandService BrandService => _brandService.Value;
@@ -52,5 +60,6 @@ public sealed class ServiceManager : IServiceManager
     public IOrderService OrderService => _orderService.Value;
     public IOrderItemService OrderItemService => _orderItemService.Value;
     public IProductService ProductService => _productService.Value;
+    public IAuthenticationService AuthenticationService => _authenticationService.Value;
 }
 

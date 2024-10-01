@@ -7,6 +7,7 @@
     <SpaRoot>..\kingsman.client</SpaRoot>
     <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:5173</SpaProxyServerUrl>
+    <UserSecretsId>b81e5f57-ecc5-4351-8cd8-80bdd861eb6c</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,6 +38,10 @@
     <ProjectReference Include="..\Presentation\Presentation.csproj" />
     <ProjectReference Include="..\Repository\Repository.csproj" />
     <ProjectReference Include="..\Service\Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="logs\" />
   </ItemGroup>
 
 </Project>

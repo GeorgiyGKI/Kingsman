@@ -10,7 +10,7 @@ public static class LoggingExtensions
             .ReadFrom.Configuration(configuration)
             .Enrich.FromLogContext()
             .WriteTo.Console()
-            .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+            .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Hour)
             .CreateLogger();
 
         return hostBuilder.UseSerilog();

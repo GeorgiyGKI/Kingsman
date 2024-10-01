@@ -1,5 +1,6 @@
 ﻿using Entities.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 
 namespace Shared.DTO;
 

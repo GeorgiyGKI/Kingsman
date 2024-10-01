@@ -2,6 +2,7 @@
 
 using AutoMapper;
 using Entities.Models;
+using Shared.DataTransferObjects;
 using Shared.DTO;
 
 public class MappingProfile : Profile
@@ -46,5 +47,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Brand, opt => opt.MapFrom(src => src.Brand))
             .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.Color));
         CreateMap<ProductForManipulationDto, Product>();
+
+        CreateMap<UserForRegistrationDto, Customer>();
     }
 }
