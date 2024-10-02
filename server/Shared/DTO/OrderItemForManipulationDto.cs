@@ -8,10 +8,7 @@ public record OrderItemForManipulationDto
     public int Quantity { get; init; }
 
     [Required(ErrorMessage = "Unit price is a required field.")]
-    public decimal UnitPrice { get; init; }
-
-    [Required]
-    public Guid OrderId { get; init; }
+    public decimal UnitPrice { get; }
 
     [Required]
     public Guid ProductId { get; init; }

@@ -1,5 +1,4 @@
 ﻿using Entities.Enums;
-using Entities.Models;
 
 namespace Shared.DTO;
 
@@ -12,7 +11,7 @@ public record ProductDto
     public int Stock { get; init; }
     public Size Size { get; init; }
     public string RefNumber { get; init; }
-    public CategoryDto Category { get; init; }
-    public BrandDto Brand { get; init; }
-    public ColorDto Color { get; init; }
+    public Guid CategoryId { get; init; }
+    public int BrandId { get; init; }
+    public int ColorId { get; init; }
 }

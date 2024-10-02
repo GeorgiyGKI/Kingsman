@@ -11,5 +11,7 @@ public record OrderForManipulationDto
     public decimal TotalAmount { get; init; }
 
     [Required]
-    public Guid CustomerId { get; init; }
+    public string UserId { get; init; }
+    [Required(ErrorMessage = "Order must contains OrdeItems")]
+    public ICollection<OrderItemForManipulationDto> OrderItems { get; init; }
 }

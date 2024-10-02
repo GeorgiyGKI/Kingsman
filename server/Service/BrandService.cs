@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.Models;
-using Repository;
 using Shared.DTO;
 
 namespace Service;

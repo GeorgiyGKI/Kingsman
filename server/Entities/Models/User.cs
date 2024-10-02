@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Entities.Models;
 
-public class Customer : IdentityUser
+public class User : IdentityUser
 {
 	[Required(ErrorMessage = "First name is a required field.")]
 	[MaxLength(50, ErrorMessage = "Maximum length for the First Name is 50 characters.")]
@@ -15,5 +15,5 @@ public class Customer : IdentityUser
 
 	public string? RefreshToken { get; set; }
 	public DateTime RefreshTokenExpiryTime { get; set; }
-    public ICollection<OrderItem> OrderItems { get; set; }
+    public ICollection<Order> Orders { get; set; }
 }

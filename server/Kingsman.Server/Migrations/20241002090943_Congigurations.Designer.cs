@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
@@ -11,9 +12,11 @@ using Repository;
 namespace Kingsman.Server.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20241002090943_Congigurations")]
+    partial class Congigurations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -206,11 +209,16 @@ namespace Kingsman.Server.Migrations
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("OrderItems");
 
@@ -424,7 +432,7 @@ namespace Kingsman.Server.Migrations
                         {
                             Id = "11111111-1111-1111-1111-111111111111",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "86dfd14c-79c8-4fa0-bb4f-b8b6bd658cae",
+                            ConcurrencyStamp = "cb6c390a-df9e-47c7-8ba1-c3773a196c13",
                             Email = "user1@example.com",
                             EmailConfirmed = true,
                             FirstName = "FirstName",
@@ -432,7 +440,7 @@ namespace Kingsman.Server.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER1@EXAMPLE.COM",
                             NormalizedUserName = "USER1",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMwKDH1Yk3WdxPtjBlutCNplYkYYCPPIaYezVac+KFJFRS7P4oKjTGKC+8KuIgwyEA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECAYMU1WYpkKfAsoFSQDRxFn/oAUy6XO4WvXamdGze1qc7h3nuPyQpBL+FFVqBmKZg==",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "",
@@ -443,7 +451,7 @@ namespace Kingsman.Server.Migrations
                         {
                             Id = "22222222-2222-2222-2222-222222222222",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a3caaf8e-4482-4a5e-919d-44d1fe5bdc36",
+                            ConcurrencyStamp = "2ed28e0b-cf4d-4946-b34e-a7dfaf82a437",
                             Email = "user2@example.com",
                             EmailConfirmed = true,
                             FirstName = "FirstName",
@@ -451,7 +459,7 @@ namespace Kingsman.Server.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER2@EXAMPLE.COM",
                             NormalizedUserName = "USER2",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBMmvZuz7Y2l566QRiH6xI/3U8zEDTCpO/An7A1AFYpIhkMF/az6E2TQmmhQpgQC3Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIuqC/EosniiYQIrHXMw+ZZqt8AqHQWsZqs7UmyoR/OKdjcnNOlMNept33pli2X2xQ==",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "",
@@ -489,13 +497,13 @@ namespace Kingsman.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dd6b6472-d5cf-417a-851d-2c8c32809196",
+                            Id = "6c5d8860-1266-463f-9b54-39771c26f722",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "a6d7c3a4-7bf8-45bd-a69e-aeb0fe3892c4",
+                            Id = "da87cd5a-f06c-49e7-b65e-5c8531373e94",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
@@ -610,7 +618,7 @@ namespace Kingsman.Server.Migrations
             modelBuilder.Entity("Entities.Models.Order", b =>
                 {
                     b.HasOne("Entities.Models.User", "User")
-                        .WithMany("Orders")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -631,6 +639,10 @@ namespace Kingsman.Server.Migrations
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Entities.Models.User", null)
+                        .WithMany("OrderItems")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Order");
 
@@ -737,7 +749,7 @@ namespace Kingsman.Server.Migrations
 
             modelBuilder.Entity("Entities.Models.User", b =>
                 {
-                    b.Navigation("Orders");
+                    b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618
         }

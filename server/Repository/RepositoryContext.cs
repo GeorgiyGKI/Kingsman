@@ -5,7 +5,7 @@ using Repository.Configuration;
 
 namespace Repository;
 
-public class RepositoryContext : IdentityDbContext<Customer>
+public class RepositoryContext : IdentityDbContext<User>
 {
 	public RepositoryContext(DbContextOptions options)
 		: base(options)
@@ -17,12 +17,18 @@ public class RepositoryContext : IdentityDbContext<Customer>
 		base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new RoleConfiguration());
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new BrandConfiguration());
+        modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new ColorConfiguration());
+        modelBuilder.ApplyConfiguration(new ProductConfiguration());
+        modelBuilder.ApplyConfiguration(new OrderConfiguration());
+        modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
     }
 
 	public DbSet<Brand>? Brands { get; set; }
     public DbSet<Category>? Categories { get; set; }
     public DbSet<Color>? Colors { get; set; }
-    public DbSet<Customer>? Customers { get; set; }
     public DbSet<Order>? Orders { get; set; }
     public DbSet<OrderItem>? OrderItems { get; set; }
     public DbSet<Product>? Products { get; set; }

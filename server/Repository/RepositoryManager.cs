@@ -10,7 +10,6 @@ public sealed class RepositoryManager : IRepositoryManager
 
     private readonly Lazy<ICategoryRepository> _categoryRepository;
     private readonly Lazy<IColorRepository> _colorRepository;
-    private readonly Lazy<ICustomerRepository> _customerRepository;
     private readonly Lazy<IOrderRepository> _orderRepository;
     private readonly Lazy<IOrderItemRepository> _orderItemRepository;
     private readonly Lazy<IProductRepository> _productRepository;
@@ -21,7 +20,6 @@ public sealed class RepositoryManager : IRepositoryManager
         _repositoryContext = repositoryContext;
         _categoryRepository = new Lazy<ICategoryRepository>(() => new CategoryRepository(repositoryContext));
         _colorRepository = new Lazy<IColorRepository>(() => new ColorRepository(repositoryContext));
-        _customerRepository = new Lazy<ICustomerRepository>(() => new CustomerRepository(repositoryContext));
         _orderRepository = new Lazy<IOrderRepository>(() => new OrderRepository(repositoryContext));
         _orderItemRepository = new Lazy<IOrderItemRepository>(() => new OrderItemRepository(repositoryContext));
         _productRepository = new Lazy<IProductRepository>(() => new ProductRepository(repositoryContext));
@@ -30,7 +28,6 @@ public sealed class RepositoryManager : IRepositoryManager
 
     public ICategoryRepository Category => _categoryRepository.Value;
     public IColorRepository Color => _colorRepository.Value;
-    public ICustomerRepository Customer => _customerRepository.Value;
     public IOrderRepository Order => _orderRepository.Value;
     public IOrderItemRepository OrderItem => _orderItemRepository.Value;
     public IProductRepository Product => _productRepository.Value;

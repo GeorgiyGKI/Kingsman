@@ -17,29 +17,35 @@ internal sealed class OrderItemService : IOrderItemService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<OrderItemDto>> GetAllOrderItemsAsync(bool trackChanges)
+    public async Task<IEnumerable<OrderItemDto>> GetAllOrderItemsAsync(Guid orderId, bool trackChanges)
     {
-        var orderItems = await _repository.OrderItem.GetAllOrderItemsAsync(trackChanges);
+        await CheckIfOrderExists(orderId, false);
+
+        var orderItems = await _repository.OrderItem.GetAllOrderItemsAsync(orderId, trackChanges);
 
         var orderItemsDto = _mapper.Map<IEnumerable<OrderItemDto>>(orderItems);
 
         return orderItemsDto;
     }
 
-    public async Task<OrderItemDto> GetOrderItemAsync(Guid id, bool trackChanges)
+    public async Task<OrderItemDto> GetOrderItemAsync(Guid orderId, Guid id, bool trackChanges)
     {
-        var orderItem = await GetOrderItemAndCheckIfItExists(id, trackChanges);
+        await CheckIfOrderExists(orderId, false);
+
+        var orderItem = await GetOrderItemAndForOrderCheckIfItExists(orderId, id, trackChanges);
 
         var orderItemDto = _mapper.Map<OrderItemDto>(orderItem);
 
         return orderItemDto;
     }
 
-    public async Task<OrderItemDto> CreateOrderItemAsync(OrderItemForManipulationDto orderItem)
+    public async Task<OrderItemDto> CreateOrderItemAsync(Guid orderId,OrderItemForManipulationDto orderItem)
     {
+        await CheckIfOrderExists(orderId, false);
+
         var orderItemEntity = _mapper.Map<OrderItem>(orderItem);
 
-        _repository.OrderItem.CreateOrderItem(orderItemEntity);
+        _repository.OrderItem.CreateOrderItem(orderId, orderItemEntity);
         await _repository.SaveAsync();
 
         var orderItemToReturn = _mapper.Map<OrderItemDto>(orderItemEntity);
@@ -47,11 +53,16 @@ internal sealed class OrderItemService : IOrderItemService
         return orderItemToReturn;
     }
 
-    public async Task<IEnumerable<OrderItemDto>> GetByIdsAsync(IEnumerable<Guid> ids, bool trackChanges)
+    public async Task<IEnumerable<OrderItemDto>> GetByIdsAsync(
+        Guid orderId,
+        IEnumerable<Guid> ids,
+        bool trackChanges
+        )
     {
+        await CheckIfOrderExists(orderId, false);
         ArgumentNullException.ThrowIfNull(ids);
 
-        var orderItemEntities = await _repository.OrderItem.GetByIdsAsync(ids, trackChanges);
+        var orderItemEntities = await _repository.OrderItem.GetByIdsAsync(orderId, ids, trackChanges);
         if (ids.Count() != orderItemEntities.Count())
             throw new ArgumentOutOfRangeException();
 
@@ -60,28 +71,11 @@ internal sealed class OrderItemService : IOrderItemService
         return orderItemsToReturn;
     }
 
-    public async Task<(IEnumerable<OrderItemDto> orderItems, string ids)> CreateOrderItemCollectionAsync
-        (IEnumerable<OrderItemForManipulationDto> orderItemCollection)
+    public async Task DeleteOrderItemAsync(Guid orderId, Guid orderItemId, bool trackChanges)
     {
-        ArgumentNullException.ThrowIfNull(orderItemCollection);
+        await CheckIfOrderExists(orderId, false);
 
-        var orderItemEntities = _mapper.Map<IEnumerable<OrderItem>>(orderItemCollection);
-        foreach (var orderItem in orderItemEntities)
-        {
-            _repository.OrderItem.CreateOrderItem(orderItem);
-        }
-
-        await _repository.SaveAsync();
-
-        var orderItemCollectionToReturn = _mapper.Map<IEnumerable<OrderItemDto>>(orderItemEntities);
-        var ids = string.Join(",", orderItemCollectionToReturn.Select(c => c.Id));
-
-        return (orderItems: orderItemCollectionToReturn, ids);
-    }
-
-    public async Task DeleteOrderItemAsync(Guid orderItemId, bool trackChanges)
-    {
-        var orderItem = await GetOrderItemAndCheckIfItExists(orderItemId, trackChanges);
+        var orderItem = await GetOrderItemAndForOrderCheckIfItExists(orderId, orderItemId, trackChanges);
 
         _repository.OrderItem.DeleteOrderItem(orderItem);
 
@@ -89,20 +83,32 @@ internal sealed class OrderItemService : IOrderItemService
     }
 
     public async Task UpdateOrderItemAsync(
+        Guid orderId,
         Guid orderItemId,
         OrderItemForManipulationDto orderItemForUpdate,
-        bool trackChanges)
+        bool trackChanges
+        )
     {
-        var orderItem = await GetOrderItemAndCheckIfItExists(orderItemId, trackChanges);
+        var orderItem = await GetOrderItemAndForOrderCheckIfItExists(orderId, orderItemId, trackChanges);
 
         _mapper.Map(orderItemForUpdate, orderItem);
 
         await _repository.SaveAsync();
     }
 
-    private async Task<OrderItem> GetOrderItemAndCheckIfItExists(Guid id, bool trackChanges)
+    private async Task<Order> CheckIfOrderExists(Guid id, bool trackChanges)
     {
-        var orderItem = await _repository.OrderItem.GetOrderItemAsync(id, trackChanges);
+        var order = await _repository.Order.GetOrderAsync(id, trackChanges);
+
+        ArgumentNullException.ThrowIfNull(order);
+
+        return order;
+    }
+
+    private async Task<OrderItem> GetOrderItemAndForOrderCheckIfItExists(Guid OrderId, Guid id, bool trackChanges)
+    {
+        var orderItem = await _repository.OrderItem.GetOrderItemAsync(OrderId, id, trackChanges);
+
         ArgumentNullException.ThrowIfNull(orderItem);
 
         return orderItem;

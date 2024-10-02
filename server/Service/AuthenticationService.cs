@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Contracts;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -20,16 +19,16 @@ namespace Service;
 internal sealed class AuthenticationService : IAuthenticationService
 {
 	private readonly IMapper _mapper;
-	private readonly UserManager<Customer> _userManager;
+	private readonly UserManager<User> _userManager;
 	private readonly IOptions<JwtConfiguration> _configuration;
 	private readonly JwtConfiguration _jwtConfiguration;
     private readonly IConfiguration _envConfiguration;
 
-    private Customer? _user;
+    private User? _user;
 
 	public AuthenticationService(
         IMapper mapper,
-		UserManager<Customer> userManager,
+		UserManager<User> userManager,
         IOptions<JwtConfiguration> configuration,
         IConfiguration envConfiguration
         )
@@ -39,12 +38,11 @@ internal sealed class AuthenticationService : IAuthenticationService
 		_configuration = configuration;
 		_jwtConfiguration = _configuration.Value;
         _envConfiguration = envConfiguration;
-
     }
 
 	public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration)
 	{
-		var user = _mapper.Map<Customer>(userForRegistration);
+		var user = _mapper.Map<User>(userForRegistration);
 
 		var result = await _userManager.CreateAsync(user, userForRegistration.Password);
 

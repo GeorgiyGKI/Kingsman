@@ -11,22 +11,28 @@ internal sealed class OrderItemRepository : RepositoryBase<OrderItem>, IOrderIte
     {
     }
 
-    public async Task<IEnumerable<OrderItem>> GetAllOrderItemsAsync(bool trackChanges) =>
-        await FindAll(trackChanges)
+    public async Task<IEnumerable<OrderItem>> GetAllOrderItemsAsync(Guid orderId, bool trackChanges) =>
+        await FindByCondition(oi => oi.OrderId.Equals(orderId), trackChanges)
         .OrderBy(oi => oi.Quantity)
         .ToListAsync();
 
-    public async Task<OrderItem> GetOrderItemAsync(Guid orderItemId, bool trackChanges) =>
-        await FindByCondition(oi => oi.Id.Equals(orderItemId), trackChanges)
+    public async Task<OrderItem> GetOrderItemAsync(Guid orderId, Guid orderItemId, bool trackChanges) =>
+        await FindByCondition
+        (
+            oi => oi.OrderId.Equals(orderId) &&
+            oi.Id.Equals(orderItemId),
+            trackChanges
+        )
         .SingleOrDefaultAsync();
 
-    public void CreateOrderItem(OrderItem orderItem) => Create(orderItem);
+    public void CreateOrderItem(Guid orderId, OrderItem orderItem) {
+        orderItem.OrderId = orderId;
+        Create(orderItem);
+    }
 
-    public async Task<IEnumerable<OrderItem>> GetByIdsAsync(IEnumerable<Guid> ids, bool trackChanges) =>
-        await FindByCondition(x => ids.Contains(x.Id), trackChanges)
+    public async Task<IEnumerable<OrderItem>> GetByIdsAsync(Guid orderId, IEnumerable<Guid> ids, bool trackChanges) =>
+        await FindByCondition(oi => oi.OrderId.Equals(orderId) && ids.Contains(oi.Id), trackChanges)
         .ToListAsync();
 
     public void DeleteOrderItem(OrderItem orderItem) => Delete(orderItem);
 }
-
-

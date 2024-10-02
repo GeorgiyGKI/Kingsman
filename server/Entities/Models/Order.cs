@@ -13,9 +13,9 @@ namespace Entities.Models
 		[Required(ErrorMessage = "Total amount is a required field.")]
 		public decimal TotalAmount { get; set; }
 
-		[ForeignKey(nameof(Customer))]
-		public string CustomerId { get; set; }
-		public Customer Customer { get; set; }
+		[ForeignKey(nameof(User))]
+		public string UserId { get; set; }
+		public User User { get; set; }
 
 		public ICollection<OrderItem> OrderItems { get; set; }
 	}
