@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Service.Contracts;
+using Shared.DTO;
 
 namespace Service;
 
@@ -26,7 +27,8 @@ public sealed class ServiceManager : IServiceManager
         IMapper mapper,
         UserManager<User> userManager,
         IOptions<JwtConfiguration> configuration,
-        IConfiguration envCongiguration
+        IConfiguration envCongiguration,
+        IDataShaper<ProductDto> dataShaper
         )
     {
         _brandService = new Lazy<IBrandService>(() =>
@@ -45,7 +47,7 @@ public sealed class ServiceManager : IServiceManager
           new OrderItemService(repositoryManager, mapper));
 
         _productService = new Lazy<IProductService>(() =>
-          new ProductService(repositoryManager, mapper));
+          new ProductService(repositoryManager, mapper, dataShaper));
 
         _authenticationService = new Lazy<IAuthenticationService>(() =>
             new AuthenticationService(mapper, userManager, configuration, envCongiguration));

@@ -11,7 +11,7 @@ public record ProductDto
     public int Stock { get; init; }
     public Size Size { get; init; }
     public string RefNumber { get; init; }
-    public Guid CategoryId { get; init; }
+    public int CategoryId { get; init; }
     public int BrandId { get; init; }
     public int ColorId { get; init; }
 }

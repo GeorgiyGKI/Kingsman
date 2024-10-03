@@ -1,8 +1,13 @@
 ﻿using AutoMapper;
 using Contracts;
+using Entities.Exceptions;
 using Entities.Models;
 using Service.Contracts;
+using Service.DataShaping;
 using Shared.DTO;
+using Shared.RequestFeatures;
+using System.ComponentModel.Design;
+using System.Dynamic;
 
 namespace Service;
 
@@ -10,20 +15,31 @@ internal sealed class ProductService : IProductService
 {
     private readonly IRepositoryManager _repository;
     private readonly IMapper _mapper;
+    private readonly IDataShaper<ProductDto> _dataShaper;
 
-    public ProductService(IRepositoryManager repository, IMapper mapper)
+    public ProductService(
+        IRepositoryManager repository,
+        IMapper mapper,
+        IDataShaper<ProductDto> dataShaper)
     {
         _repository = repository;
         _mapper = mapper;
+        _dataShaper = dataShaper;
     }
 
-    public async Task<IEnumerable<ProductDto>> GetAllProductsAsync(bool trackChanges)
+    public async Task<(IEnumerable<ShapedEntity> productDtos, MetaData metaData)> GetProductsAsync(
+        ProductParameters productParameters,
+        bool trackChanges)
     {
-        var products = await _repository.Product.GetAllProductsAsync(trackChanges);
+        if (!productParameters.ValidPriceRange)
+            throw new BadRequestException("Max price can't be less than min price");
 
-        var productsDto = _mapper.Map<IEnumerable<ProductDto>>(products);
+        var productsWithMetaData = await _repository.Product.GetProductsAsync(productParameters, trackChanges);
 
-        return productsDto;
+        var productsDto = _mapper.Map<IEnumerable<ProductDto>>(productsWithMetaData);
+        var shapedData = _dataShaper.ShapeData(productsDto, productParameters.Fields);
+
+        return (shapedData, productsWithMetaData.MetaData);
     }
 
     public async Task<ProductDto> GetProductAsync(Guid id, bool trackChanges)

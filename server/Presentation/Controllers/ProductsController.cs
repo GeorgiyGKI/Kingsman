@@ -1,8 +1,11 @@
 ﻿using Kingsman.Presentation.ActionFilters;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Service.Contracts;
 using Shared.DTO;
+using Shared.RequestFeatures;
+using System.Text.Json;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -13,11 +16,13 @@ public class ProductsController : ControllerBase
     public ProductsController(IServiceManager service) => _service = service;
 
     [HttpGet(Name = "GetProducts")]
-    public async Task<IActionResult> GetProducts()
+    public async Task<IActionResult> GetProducts([FromQuery] ProductParameters productParameters)
     {
-        var products = await _service.ProductService.GetAllProductsAsync(trackChanges: false);
+        var pagedResult = await _service.ProductService.GetProductsAsync(productParameters, trackChanges: false);
 
-        return Ok(products);
+        Response.Headers.Add("X-Pagination",JsonSerializer.Serialize(pagedResult.metaData));
+
+        return Ok(pagedResult.productDtos);
     }
 
     [HttpGet("{id:guid}", Name = "ProductById")]

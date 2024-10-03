@@ -2,6 +2,8 @@
 using Repository.Contracts;
 using Repository;
 using Microsoft.EntityFrameworkCore;
+using Shared.RequestFeatures;
+using Repository.Extensions;
 
 internal sealed class ProductRepository : RepositoryBase<Product>, IProductRepository
 {
@@ -10,9 +12,15 @@ internal sealed class ProductRepository : RepositoryBase<Product>, IProductRepos
     {
     }
 
-    public async Task<IEnumerable<Product>> GetAllProductsAsync(bool trackChanges, bool includeRelatedEntities = false)
+    public async Task<PagedList<Product>> GetProductsAsync(
+        ProductParameters productParameters,
+        bool trackChanges,
+        bool includeRelatedEntities = false)
     {
-        var productsQuery = FindAll(trackChanges);
+        var productsQuery = FindAll(trackChanges)
+            .FilterProducts(productParameters.MinPrice, productParameters.MaxPrice)
+            .Search(productParameters.SearchTerm)
+            .Sort(productParameters.OrderBy);
 
         if (includeRelatedEntities)
         {
@@ -22,9 +30,12 @@ internal sealed class ProductRepository : RepositoryBase<Product>, IProductRepos
                 .Include(p => p.Color);
         }
 
-        return await productsQuery
-            .OrderBy(p => p.Name)
-            .ToListAsync();
+
+        var products = await productsQuery.ToListAsync();
+        return  PagedList<Product>.ToPagedList(
+            products,
+            productParameters.PageNumber,
+            productParameters.PageSize);
     }
 
     public async Task<Product> GetProductAsync(Guid productId, bool trackChanges, bool includeRelatedEntities = false)

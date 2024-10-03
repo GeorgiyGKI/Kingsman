@@ -20,7 +20,7 @@ internal sealed class BrandService : IBrandService
     {
         var companies = await _repository.Brand.GetAllBrandsAsync(trackChanges);
 
-        var brandsDto = _mapper.Map<IEnumerable<BrandDto>>(companies);
+        var brandsDto = _mapper.Map<List<BrandDto>>(companies);
 
         return brandsDto;
     }

@@ -1,9 +1,13 @@
-﻿using Shared.DTO;
+﻿using Entities.Models;
+using Shared.DTO;
+using Shared.RequestFeatures;
+using System.Dynamic;
 
 namespace Service.Contracts;
 public interface IProductService
 {
-    Task<IEnumerable<ProductDto>> GetAllProductsAsync(bool trackChanges);
+    Task<(IEnumerable<ShapedEntity> productDtos, MetaData metaData)> GetProductsAsync
+        (ProductParameters productParameters, bool trackChanges);
     Task<ProductDto> GetProductAsync(Guid id, bool trackChanges);
     Task<ProductDto> CreateProductAsync(ProductForManipulationDto product);
     Task<IEnumerable<ProductDto>> GetByIdsAsync(IEnumerable<Guid> ids, bool trackChanges);

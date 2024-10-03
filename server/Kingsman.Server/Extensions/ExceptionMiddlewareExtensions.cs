@@ -1,4 +1,5 @@
 ﻿using Entities.ErrorModel;
+using Entities.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Serilog;
 
@@ -20,6 +21,7 @@ public static class ExceptionMiddlewareExtensions
 					context.Response.StatusCode = contextFeature.Error switch
 					{
                         ArgumentNullException => StatusCodes.Status404NotFound,
+                        BadRequestException => StatusCodes.Status400BadRequest,
                         _ => StatusCodes.Status500InternalServerError
 					};
 

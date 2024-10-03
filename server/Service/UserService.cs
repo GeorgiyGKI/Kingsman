@@ -47,7 +47,7 @@ public class UserService : IUserService
         ArgumentNullException.ThrowIfNull(user);
 
         var userDto = _mapper.Map<UserDto>(user);
-        t
+        
         return userDto;
     }
 }

@@ -4,6 +4,7 @@ using AutoMapper;
 using Entities.Models;
 using Shared.DataTransferObjects;
 using Shared.DTO;
+using Shared.RequestFeatures;
 
 public class MappingProfile : Profile
 {
@@ -39,3 +40,4 @@ public class MappingProfile : Profile
         CreateMap<UserForRegistrationDto, User>();
     }
 }
+

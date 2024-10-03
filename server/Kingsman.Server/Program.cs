@@ -1,8 +1,11 @@
 using AspNetCoreRateLimit;
+using Contracts;
 using Kingsman.Presentation.ActionFilters;
 using Kingsman.Server.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using Service.DataShaping;
+using Shared.DTO;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +18,8 @@ builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(Program));
+
+builder.Services.AddScoped<IDataShaper<ProductDto>, DataShaper<ProductDto>>();
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
