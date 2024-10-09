@@ -28,7 +28,8 @@ public sealed class ServiceManager : IServiceManager
         UserManager<User> userManager,
         IOptions<JwtConfiguration> configuration,
         IConfiguration envCongiguration,
-        IDataShaper<ProductDto> dataShaper
+        IDataShaper<ProductDto> dataShaper,
+        IProductLinks productLinks
         )
     {
         _brandService = new Lazy<IBrandService>(() =>
@@ -47,7 +48,7 @@ public sealed class ServiceManager : IServiceManager
           new OrderItemService(repositoryManager, mapper));
 
         _productService = new Lazy<IProductService>(() =>
-          new ProductService(repositoryManager, mapper, dataShaper));
+          new ProductService(repositoryManager, mapper, dataShaper, productLinks));
 
         _authenticationService = new Lazy<IAuthenticationService>(() =>
             new AuthenticationService(mapper, userManager, configuration, envCongiguration));

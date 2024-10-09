@@ -1,4 +1,5 @@
-﻿using Kingsman.Presentation.ActionFilters;
+﻿using Entities.LinkModels;
+using Kingsman.Presentation.ActionFilters;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,16 +17,23 @@ public class ProductsController : ControllerBase
     public ProductsController(IServiceManager service) => _service = service;
 
     [HttpGet(Name = "GetProducts")]
+    [HttpHead]
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
+
     public async Task<IActionResult> GetProducts([FromQuery] ProductParameters productParameters)
     {
-        var pagedResult = await _service.ProductService.GetProductsAsync(productParameters, trackChanges: false);
+        var linkParams = new LinkParameters(productParameters, HttpContext);
 
-        Response.Headers.Add("X-Pagination",JsonSerializer.Serialize(pagedResult.metaData));
+        var result = await _service.ProductService.GetProductsAsync(linkParams, trackChanges: false);
 
-        return Ok(pagedResult.productDtos);
+        Response.Headers.Add("X-Pagination",JsonSerializer.Serialize(result.metaData));
+
+        return result.linkResponse.HasLinks 
+            ? Ok(result.linkResponse.LinkedEntities) 
+            : Ok(result.linkResponse.ShapedEntities);
     }
 
-    [HttpGet("{id:guid}", Name = "ProductById")]
+    [HttpGet("{id:guid}", Name = "GetProductById")]
     [HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 60)]
     [HttpCacheValidation(MustRevalidate = false)]
     public async Task<IActionResult> GetProduct(Guid id)
@@ -44,7 +52,7 @@ public class ProductsController : ControllerBase
     {
         var createdProduct = await _service.ProductService.CreateProductAsync(manipulationDto)
             ;
-        return CreatedAtRoute("ProductById", new { id = createdProduct.Id }, createdProduct);
+        return CreatedAtRoute("GetProductById", new { id = createdProduct.Id }, createdProduct);
     }
 
     [HttpDelete("{id:guid}")]

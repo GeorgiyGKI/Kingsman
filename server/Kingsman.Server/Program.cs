@@ -1,8 +1,10 @@
 using AspNetCoreRateLimit;
+using Kingsman.Utility;
 using Contracts;
 using Kingsman.Presentation.ActionFilters;
 using Kingsman.Server.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc;
 using Service.DataShaping;
 using Shared.DTO;
@@ -19,8 +21,6 @@ builder.Services.ConfigureServiceManager();
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(Program));
 
-builder.Services.AddScoped<IDataShaper<ProductDto>, DataShaper<ProductDto>>();
-
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
@@ -28,6 +28,9 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddScoped<ValidateMediaTypeAttribute>();
+
+builder.Services.AddScoped<IDataShaper<ProductDto>, DataShaper<ProductDto>>();
+builder.Services.AddScoped<IProductLinks, ProductLinks>();
 
 builder.Services.ConfigureResponseCaching();
 builder.Services.ConfigureHttpCacheHeaders();
@@ -47,12 +50,11 @@ builder.Services.AddControllers(config =>
 {
     config.RespectBrowserAcceptHeader = true;
     config.ReturnHttpNotAcceptable = true;
-    //config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
     config.CacheProfiles.Add("120SecondsDuration", new CacheProfile { Duration = 120 });
 }).AddXmlDataContractSerializerFormatters()
   .AddApplicationPart(typeof(CompanyEmployees.Presentation.AssemblyReference).Assembly);
 
-
+builder.Services.AddCustomMediaTypes();
 
 var app = builder.Build();
 

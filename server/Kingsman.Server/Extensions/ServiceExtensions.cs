@@ -5,6 +5,8 @@ using Entities.Models;
 using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -118,7 +120,7 @@ public static class ServiceExtensions
 		});
 	}
 
-	public static void AddJwtConfiguration(this IServiceCollection services, IConfiguration configuration) =>
+    public static void AddJwtConfiguration(this IServiceCollection services, IConfiguration configuration) =>
 		services.Configure<JwtConfiguration>(configuration.GetSection("JwtSettings"));
 
 	public static void ConfigureSwagger(this IServiceCollection services)
@@ -175,4 +177,33 @@ public static class ServiceExtensions
 
 		});
 	}
+
+    public static void AddCustomMediaTypes(this IServiceCollection services)
+    {
+        services.Configure<MvcOptions>(config =>
+        {
+            var systemTextJsonOutputFormatter = config.OutputFormatters
+                    .OfType<SystemTextJsonOutputFormatter>()?.FirstOrDefault();
+
+            if (systemTextJsonOutputFormatter != null)
+            {
+                systemTextJsonOutputFormatter.SupportedMediaTypes
+                .Add("application/vnd.kingsman.hateoas+json");
+                systemTextJsonOutputFormatter.SupportedMediaTypes
+                .Add("application/vnd.kingsman.apiroot+json");
+            }
+
+            var xmlOutputFormatter = config.OutputFormatters
+                    .OfType<XmlDataContractSerializerOutputFormatter>()?
+                    .FirstOrDefault();
+
+            if (xmlOutputFormatter != null)
+            {
+                xmlOutputFormatter.SupportedMediaTypes
+                .Add("application/vnd.kingsman.hateoas+xml");
+                xmlOutputFormatter.SupportedMediaTypes
+                .Add("application/vnd.kingsman.apiroot+xml");
+            }
+        });
+    }
 }

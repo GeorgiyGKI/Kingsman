@@ -1,5 +1,4 @@
-﻿using Entities.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Shared.DTO;
 
@@ -12,5 +11,5 @@ public record UserDto
     public string? PhoneNumber { get; init; }
     public string? RefreshToken { get; init; }
     public DateTime RefreshTokenExpiryTime { get; init; }
-    public ICollection<Order> Orders { get; init; }
+    public ICollection<OrderDto> Orders { get; init; }
 }

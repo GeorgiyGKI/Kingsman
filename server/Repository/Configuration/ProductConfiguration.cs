@@ -1,7 +1,7 @@
 ﻿using Entities.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using Entities.Enums;
+using Shared.Enums;
 
 namespace Repository.Configuration;
 

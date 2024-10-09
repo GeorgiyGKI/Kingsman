@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.Exceptions;
+using Entities.LinkModels;
 using Entities.Models;
 using Service.Contracts;
 using Service.DataShaping;
@@ -16,30 +17,37 @@ internal sealed class ProductService : IProductService
     private readonly IRepositoryManager _repository;
     private readonly IMapper _mapper;
     private readonly IDataShaper<ProductDto> _dataShaper;
+    private readonly IProductLinks _productLinks;
 
     public ProductService(
         IRepositoryManager repository,
         IMapper mapper,
-        IDataShaper<ProductDto> dataShaper)
+        IDataShaper<ProductDto> dataShaper,
+        IProductLinks productLinks)
     {
         _repository = repository;
         _mapper = mapper;
         _dataShaper = dataShaper;
+        _productLinks = productLinks;
     }
 
-    public async Task<(IEnumerable<ShapedEntity> productDtos, MetaData metaData)> GetProductsAsync(
-        ProductParameters productParameters,
+    public async Task<(LinkResponse linkResponse, MetaData metaData)> GetProductsAsync(
+        LinkParameters linkParameters,
         bool trackChanges)
     {
-        if (!productParameters.ValidPriceRange)
+        if (!linkParameters.ProductParameters.ValidPriceRange)
             throw new BadRequestException("Max price can't be less than min price");
 
-        var productsWithMetaData = await _repository.Product.GetProductsAsync(productParameters, trackChanges);
+        var productsWithMetaData = await _repository.Product.GetProductsAsync(linkParameters.ProductParameters, trackChanges);
 
-        var productsDto = _mapper.Map<IEnumerable<ProductDto>>(productsWithMetaData);
-        var shapedData = _dataShaper.ShapeData(productsDto, productParameters.Fields);
+        var productDtos = _mapper.Map<IEnumerable<ProductDto>>(productsWithMetaData);
+        var links = _productLinks.TryGenerateLinks(
+            productDtos,
+            linkParameters.ProductParameters.Fields,
+            linkParameters.Context);
 
-        return (shapedData, productsWithMetaData.MetaData);
+
+        return (linkResponse: links, metaData: productsWithMetaData.MetaData);
     }
 
     public async Task<ProductDto> GetProductAsync(Guid id, bool trackChanges)
