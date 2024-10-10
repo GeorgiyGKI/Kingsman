@@ -40,8 +40,8 @@ namespace Kingsman.Server.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "a6d7c3a4-7bf8-45bd-a69e-aeb0fe3892c4", null, "Administrator", "ADMINISTRATOR" },
-                    { "dd6b6472-d5cf-417a-851d-2c8c32809196", null, "Manager", "MANAGER" }
+                    { "214bfc83-8f7f-4c6b-997f-52a9da5713f2", null, "Administrator", "ADMINISTRATOR" },
+                    { "f0c75d27-3780-4f90-8124-fc360e700fb8", null, "Manager", "MANAGER" }
                 });
 
             migrationBuilder.UpdateData(
@@ -49,14 +49,14 @@ namespace Kingsman.Server.Migrations
                 keyColumn: "Id",
                 keyValue: "11111111-1111-1111-1111-111111111111",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash" },
-                values: new object[] { "86dfd14c-79c8-4fa0-bb4f-b8b6bd658cae", "AQAAAAIAAYagAAAAEMwKDH1Yk3WdxPtjBlutCNplYkYYCPPIaYezVac+KFJFRS7P4oKjTGKC+8KuIgwyEA==" });
+                values: new object[] { "3078234e-d9c8-4a9f-950a-29da57f1b991", "AQAAAAIAAYagAAAAEBgaINYvUziZ2Z8N1hTRBpBEnbZaB8f6KA2Ju8Bc3jHCPbp2/6DX8yaUTYtqm1MD+A==" });
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "22222222-2222-2222-2222-222222222222",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash" },
-                values: new object[] { "a3caaf8e-4482-4a5e-919d-44d1fe5bdc36", "AQAAAAIAAYagAAAAEBMmvZuz7Y2l566QRiH6xI/3U8zEDTCpO/An7A1AFYpIhkMF/az6E2TQmmhQpgQC3Q==" });
+                values: new object[] { "e98b2457-53cb-4ca9-aac3-d3efc52650ac", "AQAAAAIAAYagAAAAEOiS5vGsiUNNwQXPVTX3XP+NW60i0yJ4iA+A4lbSishsIetv3QCIlrJClifZQPWGaA==" });
         }
 
         /// <inheritdoc />
@@ -65,12 +65,12 @@ namespace Kingsman.Server.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "a6d7c3a4-7bf8-45bd-a69e-aeb0fe3892c4");
+                keyValue: "214bfc83-8f7f-4c6b-997f-52a9da5713f2");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "dd6b6472-d5cf-417a-851d-2c8c32809196");
+                keyValue: "f0c75d27-3780-4f90-8124-fc360e700fb8");
 
             migrationBuilder.AddColumn<string>(
                 name: "UserId",

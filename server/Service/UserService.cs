@@ -24,6 +24,7 @@ public class UserService : IUserService
     public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
     {
         var users = await _userManager.Users
+               .Include(u => u.Orders)
                .ToListAsync();
 
         ArgumentNullException.ThrowIfNull(users);
@@ -41,13 +42,15 @@ public class UserService : IUserService
         }
 
         var user = await _userManager.Users
-            .Include(u => u.Orders)
-            .FirstOrDefaultAsync(u => u.Email.Equals(email));
+                                .Include(u => u.Orders)
+                                    .ThenInclude(o => o.OrderItems)
+                                .FirstOrDefaultAsync(u => u.Email.Equals(email));
 
         ArgumentNullException.ThrowIfNull(user);
 
+
         var userDto = _mapper.Map<UserDto>(user);
-        
+
         return userDto;
     }
 }

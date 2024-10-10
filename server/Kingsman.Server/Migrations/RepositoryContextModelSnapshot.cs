@@ -17,7 +17,7 @@ namespace Kingsman.Server.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -424,7 +424,7 @@ namespace Kingsman.Server.Migrations
                         {
                             Id = "11111111-1111-1111-1111-111111111111",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "86dfd14c-79c8-4fa0-bb4f-b8b6bd658cae",
+                            ConcurrencyStamp = "3078234e-d9c8-4a9f-950a-29da57f1b991",
                             Email = "user1@example.com",
                             EmailConfirmed = true,
                             FirstName = "FirstName",
@@ -432,7 +432,7 @@ namespace Kingsman.Server.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER1@EXAMPLE.COM",
                             NormalizedUserName = "USER1",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMwKDH1Yk3WdxPtjBlutCNplYkYYCPPIaYezVac+KFJFRS7P4oKjTGKC+8KuIgwyEA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBgaINYvUziZ2Z8N1hTRBpBEnbZaB8f6KA2Ju8Bc3jHCPbp2/6DX8yaUTYtqm1MD+A==",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "",
@@ -443,7 +443,7 @@ namespace Kingsman.Server.Migrations
                         {
                             Id = "22222222-2222-2222-2222-222222222222",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a3caaf8e-4482-4a5e-919d-44d1fe5bdc36",
+                            ConcurrencyStamp = "e98b2457-53cb-4ca9-aac3-d3efc52650ac",
                             Email = "user2@example.com",
                             EmailConfirmed = true,
                             FirstName = "FirstName",
@@ -451,7 +451,7 @@ namespace Kingsman.Server.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER2@EXAMPLE.COM",
                             NormalizedUserName = "USER2",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBMmvZuz7Y2l566QRiH6xI/3U8zEDTCpO/An7A1AFYpIhkMF/az6E2TQmmhQpgQC3Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOiS5vGsiUNNwQXPVTX3XP+NW60i0yJ4iA+A4lbSishsIetv3QCIlrJClifZQPWGaA==",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             SecurityStamp = "",
@@ -489,13 +489,13 @@ namespace Kingsman.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dd6b6472-d5cf-417a-851d-2c8c32809196",
+                            Id = "f0c75d27-3780-4f90-8124-fc360e700fb8",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         },
                         new
                         {
-                            Id = "a6d7c3a4-7bf8-45bd-a69e-aeb0fe3892c4",
+                            Id = "214bfc83-8f7f-4c6b-997f-52a9da5713f2",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });

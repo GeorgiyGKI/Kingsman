@@ -25,7 +25,7 @@ public class UsersController : ControllerBase
     [HttpGet("{email}", Name = "GetUserByEmail")]
     [HttpCacheExpiration(CacheLocation = CacheLocation.Public, MaxAge = 60)]
     [HttpCacheValidation(MustRevalidate = false)]
-    public async Task<IActionResult> GetUserById(string email)
+    public async Task<IActionResult> GetUserByEmail(string email)
     {
         var user = await _service.UserService.GetUserByEmailAsync(email);
 

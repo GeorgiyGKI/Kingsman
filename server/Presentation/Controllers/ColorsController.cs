@@ -23,7 +23,6 @@ public class ColorsController : ControllerBase
 	/// </summary>
 	/// <returns>The companies list</returns>
 	[HttpGet(Name = "GetColors")]
-    [Authorize]
 	public async Task<IActionResult> GetColors()
 	{
 		var companies = await _service.ColorService.GetAllColorsAsync(trackChanges: false);
